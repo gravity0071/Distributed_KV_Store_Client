@@ -1,48 +1,45 @@
-// client.cpp
+#include "util/ClientToMaster.h"
+#include "util/JsonParser.h"
 #include <iostream>
-#include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-
-#define PORT 8080
-#define BUFFER_SIZE 1024
 
 int main() {
-    int sock = 0;
-    struct sockaddr_in serv_addr;
-    char buffer[BUFFER_SIZE] = {0};
-    const char* hello = "Hello from client";
+    // 初始化 JSON 解析器
+    JsonParser jsonParser;
 
-    // Creating socket file descriptor
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        std::cout << "Socket creation error" << std::endl;
+    // 创建 ClientToMaster 实例
+    ClientToMaster clientToMaster(jsonParser);
+
+    // 连接到 Master 节点
+    if (!clientToMaster.connectToMaster()) {
+        std::cerr << "Failed to connect to Master. Exiting." << std::endl;
         return -1;
     }
 
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
+    std::cout << "Connected to Master successfully." << std::endl;
 
-    // Convert IPv4 and IPv6 addresses from text to binary form
-    if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-        std::cout << "Invalid address or Address not supported" << std::endl;
-        return -1;
+    // 循环查询键
+    std::string key;
+    while (true) {
+        std::cout << "Enter the key to lookup (or 'exit' to quit): ";
+        std::cin >> key;
+
+        if (key == "exit") {
+            std::cout << "Exiting the client." << std::endl;
+            break;
+        }
+
+        // 向 Master 发送查询请求
+        auto response = clientToMaster.sendRequest(key);
+        if (response.has_value()) {
+            std::cout << "Master response: " << response.value() << std::endl;
+        } else {
+            std::cerr << "Failed to get response from Master." << std::endl;
+        }
     }
 
-    // Connect to server
-    if (connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-        std::cout << "Connection Failed" << std::endl;
-        return -1;
-    }
+    // 关闭连接
+    clientToMaster.closeConnection();
+    std::cout << "Connection to Master closed." << std::endl;
 
-    // Send message to server
-    send(sock, hello, strlen(hello), 0);
-    std::cout << "Hello message sent to server" << std::endl;
-
-    // Read message from server
-    read(sock, buffer, BUFFER_SIZE);
-    std::cout << "Message from server: " << buffer << std::endl;
-
-    close(sock);
     return 0;
 }
