@@ -5,6 +5,7 @@
 #include "JsonParser.h"
 #include <string>
 #include <optional>
+#include <map> // 新增：用于 std::map 类型
 
 class ClientToMaster {
 private:
@@ -20,7 +21,7 @@ public:
     bool connectToMaster();
 
     // 向 Master 发送查询请求并接收响应
-    std::optional<std::string> sendRequest(const std::string& key);
+    std::optional<std::map<std::string, std::string>> sendRequest(const std::string& key);
 
     // 关闭与 Master 的连接
     void closeConnection();

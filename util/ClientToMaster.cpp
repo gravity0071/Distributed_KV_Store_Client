@@ -11,11 +11,11 @@ bool ClientToMaster::connectToMaster() {
         std::cerr << "Failed to connect to Master at 127.0.0.1:8080" << std::endl;
         return false;
     }
-//    std::cout << "Connected to Master at 127.0.0.1:8080" << std::endl;
+    std::cout << "Connected to Master at 127.0.0.1:8080 successfully." << std::endl;
     return true;
 }
 
-std::optional<std::string> ClientToMaster::sendRequest(const std::string& key) {
+std::optional<std::map<std::string, std::string>> ClientToMaster::sendRequest(const std::string& key) {
     if (socketFd < 0) {
         std::cerr << "No active connection to Master. Please connect first." << std::endl;
         return std::nullopt;
@@ -48,18 +48,31 @@ std::optional<std::string> ClientToMaster::sendRequest(const std::string& key) {
 
     // 解析响应
     std::map<std::string, std::string> responseMap = jsonParser.JsonToMap(buffer);
+
+    // 检查响应中的错误
     if (responseMap.find("error") != responseMap.end()) {
         std::cerr << "Error from Master: " << responseMap["error"] << std::endl;
+
+        if (responseMap["error"] == "Store is not alive") {
+            std::cerr << "Store ID: " << responseMap["store_id"] << " is currently unavailable." << std::endl;
+        }
         return std::nullopt;
     }
 
-    if (responseMap.find("value") != responseMap.end()) {
+    // 检查响应中是否包含完整的字段
+    if (responseMap.find("key") != responseMap.end() &&
+        responseMap.find("store_id") != responseMap.end() &&
+        responseMap.find("ip") != responseMap.end() &&
+        responseMap.find("port") != responseMap.end()) {
         std::cout << "Key: " << responseMap["key"]
                   << ", Store ID: " << responseMap["store_id"]
-                  << ", Value: " << responseMap["value"] << std::endl;
-        return responseMap["value"];
+                  << ", IP: " << responseMap["ip"]
+                  << ", Port: " << responseMap["port"] << std::endl;
+
+        return responseMap; // 返回完整的响应
     }
 
+    // 如果未包含期望字段，输出错误
     std::cerr << "Invalid response format from Master." << std::endl;
     return std::nullopt;
 }

@@ -12,7 +12,9 @@ include_directories(${CMAKE_SOURCE_DIR}/util)
 file(GLOB UTIL_SOURCES "util/*.cpp")
 
 # 设置可执行文件
-add_executable(MyExecutable main.cpp ${UTIL_SOURCES})
+add_executable(MyExecutable main.cpp ${UTIL_SOURCES}
+        util/ClientToServer.h
+        util/ClientToServer.cpp)
 
 # 添加 nlohmann/json 库
 include(FetchContent)
