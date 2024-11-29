@@ -23,6 +23,10 @@ int main() {
 
     // 循环查询键
     std::string key;
+    std::string currentServerIp;
+    std::string currentServerPort;
+    bool connectedToServer = false;
+
     while (true) {
         std::cout << "Enter the key to lookup (or 'exit' to quit): ";
         std::cin >> key;
@@ -47,39 +51,49 @@ int main() {
                 std::string serverIp = responseMap.at("ip");
                 std::string serverPort = responseMap.at("port");
 
-                // 连接到指定的 Server
-                if (clientToServer.connectToServer(serverIp, serverPort)) {
-                    std::cout << "Connected to Server at " << serverIp << ":" << serverPort << std::endl;
-
-                    // 执行操作
-                    std::string operation;
-                    std::cout << "Enter operation (read/write): ";
-                    std::cin >> operation;
-
-                    if (operation == "read") {
-                        auto serverResponse = clientToServer.sendRequest("read", key);
-                        if (serverResponse.has_value()) {
-                            std::cout << "Server response: " << serverResponse.value() << std::endl;
-                        } else {
-                            std::cerr << "Failed to get response from Server." << std::endl;
-                        }
-                    } else if (operation == "write") {
-                        std::string value;
-                        std::cout << "Enter value to write: ";
-                        std::cin >> value;
-                        auto serverResponse = clientToServer.sendRequest("write", key, value);
-                        if (serverResponse.has_value()) {
-                            std::cout << "Write successful. Server response: " << serverResponse.value() << std::endl;
-                        } else {
-                            std::cerr << "Failed to write to Server." << std::endl;
-                        }
-                    } else {
-                        std::cerr << "Unsupported operation: " << operation << std::endl;
+                // 检查是否需要重新连接到新的服务器
+                if (!connectedToServer || serverIp != currentServerIp || serverPort != currentServerPort) {
+                    if (connectedToServer) {
+                        clientToServer.closeConnection(); // 关闭与当前 Server 的连接
+                        connectedToServer = false;
                     }
 
-                    clientToServer.closeConnection(); // 关闭与 Server 的连接
+                    // 尝试连接到新的 Server
+                    if (clientToServer.connectToServer(serverIp, serverPort)) {
+                        std::cout << "Connected to Server at " << serverIp << ":" << serverPort << std::endl;
+                        currentServerIp = serverIp;
+                        currentServerPort = serverPort;
+                        connectedToServer = true;
+                    } else {
+                        std::cerr << "Failed to connect to Server." << std::endl;
+                        continue;
+                    }
+                }
+
+                // 执行操作
+                std::string operation;
+                std::cout << "Enter operation (read/write): ";
+                std::cin >> operation;
+
+                if (operation == "read") {
+                    auto serverResponse = clientToServer.sendRequest("read", key);
+                    if (serverResponse.has_value()) {
+                        std::cout << "Server response: " << serverResponse.value() << std::endl;
+                    } else {
+                        std::cerr << "Failed to get response from Server." << std::endl;
+                    }
+                } else if (operation == "write") {
+                    std::string value;
+                    std::cout << "Enter value to write: ";
+                    std::cin >> value;
+                    auto serverResponse = clientToServer.sendRequest("write", key, value);
+                    if (serverResponse.has_value()) {
+                        std::cout << "Write successful. Server response: " << serverResponse.value() << std::endl;
+                    } else {
+                        std::cerr << "Failed to write to Server." << std::endl;
+                    }
                 } else {
-                    std::cerr << "Failed to connect to Server." << std::endl;
+                    std::cerr << "Unsupported operation: " << operation << std::endl;
                 }
             } else {
                 std::cerr << "Master did not provide valid Server details." << std::endl;
@@ -87,6 +101,11 @@ int main() {
         } else {
             std::cerr << "Failed to get response from Master." << std::endl;
         }
+    }
+
+    // 关闭与服务器的连接
+    if (connectedToServer) {
+        clientToServer.closeConnection();
     }
 
     // 关闭与 Master 的连接

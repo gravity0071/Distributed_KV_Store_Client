@@ -31,7 +31,9 @@ public:
 
     // 关闭与 Server 的连接
     void closeConnection();
+
+    // 持续运行客户端的交互逻辑
+    void run();
 };
 
 #endif // CLIENT_TO_SERVER_H
-
