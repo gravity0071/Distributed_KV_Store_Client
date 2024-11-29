@@ -72,7 +72,7 @@ int main() {
 
                 // 执行操作
                 std::string operation;
-                std::cout << "Enter operation (read/write): ";
+                std::cout << "Enter operation (read/write/delete/increment): ";
                 std::cin >> operation;
 
                 if (operation == "read") {
@@ -91,6 +91,20 @@ int main() {
                         std::cout << "Write successful. Server response: " << serverResponse.value() << std::endl;
                     } else {
                         std::cerr << "Failed to write to Server." << std::endl;
+                    }
+                } else if (operation == "delete") {
+                    auto serverResponse = clientToServer.sendRequest("delete", key);
+                    if (serverResponse.has_value()) {
+                        std::cout << "Delete successful. Server response: " << serverResponse.value() << std::endl;
+                    } else {
+                        std::cerr << "Failed to delete key on Server." << std::endl;
+                    }
+                } else if (operation == "increment") {
+                    auto serverResponse = clientToServer.sendRequest("increment", key);
+                    if (serverResponse.has_value()) {
+                        std::cout << "Increment successful. New value: " << serverResponse.value() << std::endl;
+                    } else {
+                        std::cerr << "Failed to increment key on Server." << std::endl;
                     }
                 } else {
                     std::cerr << "Unsupported operation: " << operation << std::endl;

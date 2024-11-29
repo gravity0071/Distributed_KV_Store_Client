@@ -38,7 +38,7 @@ std::optional<std::string> ClientToServer::sendRequest(const std::string& operat
                 {"key", key}
         };
 
-        if (operation == "write") {
+        if (operation == "write" || operation == "increment") {
             requestMap["value"] = value;
         }
 
@@ -112,7 +112,7 @@ void ClientToServer::run() {
     std::string operation, key, value;
 
     while (true) {
-        std::cout << "\nEnter operation (read/write/exit): ";
+        std::cout << "\nEnter operation (read/write/delete/increment/exit): ";
         std::cin >> operation;
 
         if (operation == "exit") {
@@ -122,7 +122,7 @@ void ClientToServer::run() {
         std::cout << "Enter key: ";
         std::cin >> key;
 
-        if (operation == "write") {
+        if (operation == "write" || operation == "increment") {
             std::cout << "Enter value: ";
             std::cin >> value;
         } else {
