@@ -38,7 +38,7 @@ std::optional<std::string> ClientToServer::sendRequest(const std::string& operat
                 {"key", key}
         };
 
-        if (operation == "write" || operation == "increment") {
+        if (operation == "write") {
             requestMap["value"] = value;
         }
 
@@ -49,7 +49,7 @@ std::optional<std::string> ClientToServer::sendRequest(const std::string& operat
             perror("[Error] Failed to send request to Server");
             return std::nullopt;
         }
-        std::cout << "[Info] Sent query to Server: " << jsonRequest << std::endl;
+//        std::cout << "[Info] Sent query to Server: " << jsonRequest << std::endl;
 
         // 接收服务器的响应
         char buffer[1024] = {0};
@@ -65,7 +65,7 @@ std::optional<std::string> ClientToServer::sendRequest(const std::string& operat
         }
 
         buffer[bytesRead] = '\0';
-        std::cout << "[Info] Received response from Server: " << buffer << std::endl;
+//        std::cout << "[Info] Received response from Server: " << buffer << std::endl;
 
         // 解析并处理响应
         auto responseMap = jsonParser.JsonToMap(buffer);
@@ -79,7 +79,7 @@ std::optional<std::string> ClientToServer::sendRequest(const std::string& operat
             return responseMap["value"];
         }
 
-        std::cerr << "[Error] Invalid response format from Server." << std::endl;
+//        std::cerr << "[Error] Invalid response format from Server." << std::endl;
         return std::nullopt;
 
     } catch (const std::exception& e) {
@@ -122,7 +122,7 @@ void ClientToServer::run() {
         std::cout << "Enter key: ";
         std::cin >> key;
 
-        if (operation == "write" || operation == "increment") {
+        if (operation == "write") {
             std::cout << "Enter value: ";
             std::cin >> value;
         } else {

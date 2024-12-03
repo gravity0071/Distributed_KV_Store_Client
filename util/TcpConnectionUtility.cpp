@@ -47,6 +47,6 @@ int TcpConnectionUtility::connectToServer(const std::string& serverIp, int serve
         return -1;
     }
 
-    std::cout << "Connected to server at " << serverIp << ":" << serverPort << std::endl;
+//    std::cout << "Connected to server at " << serverIp << ":" << serverPort << std::endl;
     return socketFd;
 }

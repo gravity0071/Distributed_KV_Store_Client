@@ -33,7 +33,7 @@ std::optional<std::map<std::string, std::string>> ClientToMaster::sendRequest(co
         perror("Failed to send request to Master");
         return std::nullopt;
     }
-    std::cout << "Sent query to Master: " << jsonRequest << std::endl;
+//    std::cout << "Sent query to Master: " << jsonRequest << std::endl;
 
     // 接收 Master 的响应
     char buffer[1024] = {0};
@@ -44,7 +44,7 @@ std::optional<std::map<std::string, std::string>> ClientToMaster::sendRequest(co
     }
 
     buffer[bytesRead] = '\0';
-    std::cout << "Received response from Master: " << buffer << std::endl;
+//    std::cout << "Received response from Master: " << buffer << std::endl;
 
     // 解析响应
     std::map<std::string, std::string> responseMap = jsonParser.JsonToMap(buffer);
@@ -73,7 +73,7 @@ std::optional<std::map<std::string, std::string>> ClientToMaster::sendRequest(co
     }
 
     // 如果未包含期望字段，输出错误
-    std::cerr << "Invalid response format from Master." << std::endl;
+//    std::cerr << "Invalid response format from Master." << std::endl;
     return std::nullopt;
 }
 

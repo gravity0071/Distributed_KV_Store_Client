@@ -16,7 +16,7 @@ int main() {
         return -1;
     }
 
-    std::cout << "Connected to Master successfully." << std::endl;
+//    std::cout << "Connected to Master successfully." << std::endl;
 
     // 创建 ClientToServer 实例
     ClientToServer clientToServer(jsonParser);
@@ -40,11 +40,11 @@ int main() {
         auto masterResponse = clientToMaster.sendRequest(key);
         if (masterResponse.has_value()) {
             const auto& responseMap = masterResponse.value(); // 获取完整的 map
-            std::cout << "Master response map: ";
-            for (const auto& [k, v] : responseMap) {
-                std::cout << k << " = " << v << ", ";
-            }
-            std::cout << std::endl;
+//            std::cout << "Master response map: ";
+//            for (const auto& [k, v] : responseMap) {
+//                std::cout << k << " = " << v << ", ";
+//            }
+//            std::cout << std::endl;
 
             // 提取 IP 和 Port
             if (responseMap.find("ip") != responseMap.end() && responseMap.find("port") != responseMap.end()) {
@@ -60,7 +60,7 @@ int main() {
 
                     // 尝试连接到新的 Server
                     if (clientToServer.connectToServer(serverIp, serverPort)) {
-                        std::cout << "Connected to Server at " << serverIp << ":" << serverPort << std::endl;
+//                        std::cout << "Connected to Server at " << serverIp << ":" << serverPort << std::endl;
                         currentServerIp = serverIp;
                         currentServerPort = serverPort;
                         connectedToServer = true;
@@ -72,7 +72,7 @@ int main() {
 
                 // 执行操作
                 std::string operation;
-                std::cout << "Enter operation (read/write/delete/increment): ";
+                std::cout << "Enter operation (read/write/delete): ";
                 std::cin >> operation;
 
                 if (operation == "read") {
@@ -90,22 +90,22 @@ int main() {
                     if (serverResponse.has_value()) {
                         std::cout << "Write successful. Server response: " << serverResponse.value() << std::endl;
                     } else {
-                        std::cerr << "Failed to write to Server." << std::endl;
+//                        std::cerr << "Failed to write to Server." << std::endl;
                     }
                 } else if (operation == "delete") {
                     auto serverResponse = clientToServer.sendRequest("delete", key);
                     if (serverResponse.has_value()) {
                         std::cout << "Delete successful. Server response: " << serverResponse.value() << std::endl;
                     } else {
-                        std::cerr << "Failed to delete key on Server." << std::endl;
+//                        std::cerr << "Failed to delete key on Server." << std::endl;
                     }
-                } else if (operation == "increment") {
-                    auto serverResponse = clientToServer.sendRequest("increment", key);
-                    if (serverResponse.has_value()) {
-                        std::cout << "Increment successful. New value: " << serverResponse.value() << std::endl;
-                    } else {
-                        std::cerr << "Failed to increment key on Server." << std::endl;
-                    }
+//                } else if (operation == "increment") {
+//                    auto serverResponse = clientToServer.sendRequest("increment", key);
+//                    if (serverResponse.has_value()) {
+//                        std::cout << "Increment successful. New value: " << serverResponse.value() << std::endl;
+//                    } else {
+//                        std::cerr << "Failed to increment key on Server." << std::endl;
+//                    }
                 } else {
                     std::cerr << "Unsupported operation: " << operation << std::endl;
                 }
