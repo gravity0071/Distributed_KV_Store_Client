@@ -16,7 +16,7 @@ bool ClientToServer::connectToServer(const std::string& ip, const std::string& p
             std::cerr << "[Error] Failed to connect to Server at " << ip << ":" << port << std::endl;
             return false;
         }
-        std::cout << "[Info] Connected to Server at " << ip << ":" << port << " successfully." << std::endl;
+//        std::cout << "[Info] Connected to Server at " << ip << ":" << port << " successfully." << std::endl;
         return true;
     } catch (const std::exception& e) {
         std::cerr << "[Exception] Failed to parse port or connect: " << e.what() << std::endl;
@@ -93,7 +93,7 @@ void ClientToServer::closeConnection() {
     if (socketFd >= 0) {
         close(socketFd);
         socketFd = -1;
-        std::cout << "[Info] Closed connection to Server." << std::endl;
+//        std::cout << "[Info] Closed connection to Server." << std::endl;
     } else {
         std::cerr << "[Warning] Connection to Server already closed." << std::endl;
     }
