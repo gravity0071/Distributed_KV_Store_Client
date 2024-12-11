@@ -51,10 +51,10 @@ std::optional<std::map<std::string, std::string>> ClientToMaster::sendRequest(co
 
     // 检查响应中的错误
     if (responseMap.find("error") != responseMap.end()) {
-        std::cerr << "Error from Master: " << responseMap["error"] << std::endl;
+//        std::cerr << "Error from Master: " << responseMap["error"] << std::endl;
 
         if (responseMap["error"] == "Store is not alive") {
-            std::cerr << "Store ID: " << responseMap["store_id"] << " is currently unavailable." << std::endl;
+//            std::cerr << "Store ID: " << responseMap["store_id"] << " is currently unavailable." << std::endl;
         }
         return std::nullopt;
     }

@@ -71,7 +71,7 @@ std::optional<std::string> ClientToServer::sendRequest(const std::string& operat
         auto responseMap = jsonParser.JsonToMap(buffer);
 
         if (responseMap.find("error") != responseMap.end()) {
-            std::cerr << "[Server Error] " << responseMap["error"] << std::endl;
+//            std::cerr << "[Server Error] " << responseMap["error"] << std::endl;
             return std::nullopt;
         }
 
@@ -83,7 +83,7 @@ std::optional<std::string> ClientToServer::sendRequest(const std::string& operat
         return std::nullopt;
 
     } catch (const std::exception& e) {
-        std::cerr << "[Exception] Error during request: " << e.what() << std::endl;
+//        std::cerr << "[Exception] Error during request: " << e.what() << std::endl;
         return std::nullopt;
     }
 }
@@ -105,7 +105,7 @@ void ClientToServer::run() {
     std::string port = "8080";   // 替换为实际端口
 
     if (!connectToServer(ip, port)) {
-        std::cerr << "[Error] Unable to establish connection to the server." << std::endl;
+//        std::cerr << "[Error] Unable to establish connection to the server." << std::endl;
         return;
     }
 

@@ -113,7 +113,7 @@ int main() {
                 std::cerr << "Master did not provide valid Server details." << std::endl;
             }
         } else {
-            std::cerr << "Failed to get response from Master." << std::endl;
+//            std::cerr << "Failed to get response from Master." << std::endl;
         }
     }
 
