@@ -7,7 +7,6 @@
 #include <map>
 #include <string>
 
-// 连接到服务器
 bool ClientToServer::connectToServer(const std::string& ip, const std::string& port) {
     try {
         int serverPort = std::stoi(port); // Convert port from string to integer
@@ -99,10 +98,9 @@ void ClientToServer::closeConnection() {
     }
 }
 
-// 主函数用于交互
 void ClientToServer::run() {
-    std::string ip = "127.0.0.1"; // 替换为实际 IP
-    std::string port = "8080";   // 替换为实际端口
+    std::string ip = "127.0.0.1";
+    std::string port = "8080";
 
     if (!connectToServer(ip, port)) {
 //        std::cerr << "[Error] Unable to establish connection to the server." << std::endl;
